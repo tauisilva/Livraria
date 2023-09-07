@@ -17,7 +17,7 @@ public class LivrosDAL extends ConexaoMySQL {
     public void incluirLivros(LivrosDTO livros) throws Exception {
         //Prepara a conexão com o MySQL
         abrirBD();
-        SQL = "INSERT INTO livros (livTitulo, livISBN) VALUES (?, ?, ?)";
+        SQL = "INSERT INTO livros (livTitulo, livISBN) VALUES ( ?, ?)";
         ps = con.prepareStatement(SQL);
         //Busca os valores da classe clienteDTO
         ps.setString(1, livros.getLivTitulo());
