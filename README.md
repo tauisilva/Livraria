@@ -1,8 +1,5 @@
 # Livraria
- exercicio do dia 05/09/23 da materia de Paradigmas de Linguagens de Programação do curso de Ciências da Computação 
+## *Paradigmas de Linguagens de Programação*
+![image](https://github.com/tauisilva/Livraria/assets/42608628/c2425aca-be57-411e-a095-5ec22ff8c98e)
+## Exercicio universitário do curso de Ciências da Computação 
 
-Alunos:
-
-Carla Braga
-Taui Silva
-João Victor
