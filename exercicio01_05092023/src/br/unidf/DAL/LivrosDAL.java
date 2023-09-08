@@ -46,7 +46,7 @@ public class LivrosDAL extends ConexaoMySQL {
     
     //Método que vai selecionar todos os clientes no nosso Banco de Dados
     //e ordenar por nome do cliente
-    public List selecionarListaLivros() throws Exception
+    public static List selecionarListaLivros() throws Exception
     {
         abrirBD();
         SQL = "SELECT * FROM livros ORDER BY livTitulo";
@@ -66,18 +66,20 @@ public class LivrosDAL extends ConexaoMySQL {
      }
      //Método que vai fazer as alterações necessárias nos dados dos clientes
      //selecionados por seu código no nosso Banco de Dados
-     public void alterarLivros(LivrosDTO livros) throws Exception
-     {
-         abrirBD();         
-         //SQL = "UPDATE livros SET livTitulo = ?, livISBN = ? WHERE livID = ?";
-         SQL = "UPDATE livros SET livTitulo = ?, livISBN = ? WHERE livID = ?";
-         ps = con.prepareStatement(SQL);
-         ps.setLong(1, livros.getLivID());
-         ps.setString(2, livros.getLivTitulo());
-         ps.setLong(3, livros.getLivISBN());
-         ps.execute();
-         fecharBD();
-     }
+     public void alterarLivros(LivrosDTO livros) throws Exception {
+        abrirBD();         
+        SQL = "UPDATE livros SET livTitulo = ?, livISBN = ? WHERE livID = ?";
+        ps = con.prepareStatement(SQL);
+        
+        // Os parâmetros devem ser definidos na ordem correta
+        ps.setString(1, livros.getLivTitulo());
+        ps.setInt(2, livros.getLivISBN());
+        ps.setLong(3, livros.getLivID());
+        
+        ps.executeUpdate(); 
+        fecharBD();
+    }
+    
      public void excluirLivros(Integer livID) throws Exception
      {
          abrirBD();
