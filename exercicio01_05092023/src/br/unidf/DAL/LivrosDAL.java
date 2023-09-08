@@ -1,110 +1,94 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package br.unidf.DAL;
 
 import br.unidf.DTO.LivrosDTO;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- *
- * @author carla
- */
 public class LivrosDAL extends ConexaoMySQL {
 
-    public void incluirLivros(LivrosDTO livros) throws Exception {
-        //Prepara a conexão com o MySQL
-        //abrirBD();
-        SQL = "INSERT INTO livros (livID, livTitulo, livISBN) VALUES (?, ?, ?)";
-        ps = con.prepareStatement(SQL);
-        //Busca os valores da classe clienteDTO
-        ps.setString(1, cliente.getCliNome());
-        ps.setDate(2, (java.sql.Date) (Date) cliente.getCliDtInclusao());
-        ps.setString(3, cliente.getCliEndereco());
-        ps.setString(4, cliente.getCliBairro());
-        ps.setString(5, cliente.getCliEmail());
-        ps.setString(6, cliente.getCliTel());
-        ps.setString(7, cliente.getCliCidade());
-        ps.setString(8, cliente.getCliUF());
-        ps.execute();
-        fecharBD();
-    }
-    public ClienteDTO selecionarClientePorID(Integer cliID)throws Exception
-    {
+    private static void prepararStatement(String sql, Object... parametros) throws SQLException {
         abrirBD();
-        SQL = "SELECT * FROM clientes WHERE cliID = ?";
-        ps = con.prepareStatement(SQL);
-        ps.setInt(1, cliID);
-        rs = ps.executeQuery();
-        ClienteDTO cliente = new ClienteDTO();
-        if(rs.next())
-        {
-            cliente.setCliID(rs.getInt("cliID"));
-            cliente.setCliNome(rs.getString("cliNome"));
-            cliente.setCliDtInclusao(rs.getDate("cliDtInclusao"));
-            cliente.setCliEndereco(rs.getString("cliEndereco"));
-            cliente.setCliBairro(rs.getString("cliBairro"));
-            cliente.setCliEmail(rs.getString("cliEmail"));
-            cliente.setCliTel(rs.getString("cliTel"));
-            cliente.setCliCidade(rs.getString("cliCidade"));
-            cliente.setCliUF(rs.getString("cliUF"));
-            fecharBD();            
+        ps = con.prepareStatement(sql);
+        for (int i = 0; i < parametros.length; i++) {
+            ps.setObject(i + 1, parametros[i]);
         }
-        return cliente;
     }
-    //Método que vai selecionar todos os clientes no nosso Banco de Dados
-    //e ordenar por nome do cliente
-    public List selecionarListaClientes() throws Exception
-    {
-        abrirBD();
-        SQL = "SELECT * FROM clientes ORDER BY cliNome";
-        ps = con.prepareStatement(SQL);
-        rs = ps.executeQuery();
-        List listaClientes = new ArrayList();
-        while(rs.next())
-        {
-            ClienteDTO cliente = new ClienteDTO();
-            cliente.setCliID(rs.getInt("cliID"));
-            cliente.setCliNome(rs.getString("cliNome"));
-            cliente.setCliDtInclusao(rs.getDate("cliDtInclusao"));
-            cliente.setCliEndereco(rs.getString("cliEndereco"));
-            cliente.setCliBairro(rs.getString("cliBairro"));
-            cliente.setCliEmail(rs.getString("cliEmail"));
-            cliente.setCliTel(rs.getString("cliTel"));
-            cliente.setCliCidade(rs.getString("cliCidade"));
-            cliente.setCliUF(rs.getString("cliUF"));
-            listaClientes.add(cliente);         
-        }
-        fecharBD();
-        return listaClientes;
-     }
-     //Método que vai fazer as alterações necessárias nos dados dos clientes
-     //selecionados por seu código no nosso Banco de Dados
-     public void alterarCliente(ClienteDTO cliente) throws Exception
-     {
-         abrirBD();         
-         SQL = "UPDATE clientes SET cliNome = ?, cliDtInclusao = ?, cliEndereco = ?, cliBairro = ?, cliEmail = ?, cliTel = ?, cliCidade = ?, cliUF = ? WHERE cliID = ?";
-         ps = con.prepareStatement(SQL);
-         ps.setLong(1, cliente.getCliID());
-         ps.setString(2, cliente.getCliNome());
-         ps.setDate(3, new java.sql.Date(cliente.getCliDtInclusao().getTime()));
-         ps.setString(4, cliente.getCliEndereco());
-         ps.setString(5, cliente.getCliBairro());
-         ps.setString(6, cliente.getCliEmail());
-         ps.setString(7, cliente.getCliTel());
-         ps.setString(8, cliente.getCliCidade());
-         ps.setString(9, cliente.getCliUF());
-         ps.execute();
-         fecharBD();
-     }
-     public void excluirCliente(Integer cliID) throws Exception
-     {
-         abrirBD();
-         SQL = "DELETE FROM clientes WHERE cliID = ?";
-         ps = con.prepareStatement(SQL);
-         ps.setInt(1, cliID);
-         ps.execute();
-         fecharBD();
-     }
 
+    private static void fecharStatement() throws SQLException {
+        if (ps != null) {
+            ps.close();
+        }
+    }
+
+    public void incluirLivros(LivrosDTO livros) throws SQLException {
+        String sql = "INSERT INTO livros (livTitulo, livISBN) VALUES (?, ?)";
+        try {
+            prepararStatement(sql, livros.getLivTitulo(), livros.getLivISBN());
+            ps.execute();
+        } finally {
+            fecharStatement();
+            fecharBD();
+        }
+    }
+
+    public LivrosDTO selecionarLivrosPorID(Integer livID) throws SQLException {
+        String sql = "SELECT * FROM livros WHERE livID = ?";
+        try {
+            prepararStatement(sql, livID);
+            rs = ps.executeQuery();
+            LivrosDTO livros = new LivrosDTO();
+            if (rs.next()) {
+                livros.setLivID(rs.getInt("livID"));
+                livros.setLivTitulo(rs.getString("livTitulo"));
+                livros.setLivISBN(rs.getInt("livISBN"));
+            }
+            return livros;
+        } finally {
+            fecharStatement();
+            fecharBD();
+        }
+    }
+
+    public static List<LivrosDTO> selecionarListaLivros() throws SQLException {
+        String sql = "SELECT * FROM livros ORDER BY livTitulo";
+        try {
+            prepararStatement(sql);
+            rs = ps.executeQuery();
+            List<LivrosDTO> listaLivros = new ArrayList<>();
+            while (rs.next()) {
+                LivrosDTO livros = new LivrosDTO();
+                livros.setLivID(rs.getInt("livID"));
+                livros.setLivTitulo(rs.getString("livTitulo"));
+                livros.setLivISBN(rs.getInt("livISBN"));
+                listaLivros.add(livros);
+            }
+            return listaLivros;
+        } finally {
+            fecharStatement();
+            fecharBD();
+        }
+    }
+
+    public void alterarLivros(LivrosDTO livros) throws SQLException {
+        String sql = "UPDATE livros SET livTitulo = ?, livISBN = ? WHERE livID = ?";
+        try {
+            prepararStatement(sql, livros.getLivTitulo(), livros.getLivISBN(), livros.getLivID());
+            ps.executeUpdate();
+        } finally {
+            fecharStatement();
+            fecharBD();
+        }
+    }
+
+    public void excluirLivros(Integer livID) throws SQLException {
+        String sql = "DELETE FROM livros WHERE livID = ?";
+        try {
+            prepararStatement(sql, livID);
+            ps.execute();
+        } finally {
+            fecharStatement();
+            fecharBD();
+        }
+    }
 }

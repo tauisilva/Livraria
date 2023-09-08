@@ -11,28 +11,37 @@ import java.sql.ResultSet;
 
 /**
  *
- * @author carla
+ * @author carla braga && taui silva && joao victor
  */
 public class ConexaoMySQL {
 
-    public Connection con;
-    public PreparedStatement ps;
-    public ResultSet rs;
-    public String SQL;
+    public static Connection con;
+    public static PreparedStatement ps;
+    public static ResultSet rs;
+    public static String SQL;
 
-    public void abrirBD() throws Exception {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        String url = "jdbc:mysql://localhost:3306/exercicio01_05092023";
-        String user = "root";//Seu nome de usuário.
-        String password = "0299";  //Sua senha.
-        con = DriverManager.getConnection(url, user, password);
-    }
+    public static void abrirBD() {
+        try {
 
-    public void fecharBD() throws Exception {
-        if (con != null) {
-            con.close();
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            String url = "jdbc:mysql://localhost:3306/ "; // adicione seu banco ex: exercicio01_05092023
+            String user = "";// Seu nome de usuário.
+            String password = ""; // Sua senha.
+            con = DriverManager.getConnection(url, user, password);
+        } catch (Exception e) {
+
         }
     }
-    
+
+    public static void fecharBD() {
+        try {
+
+            if (con != null) {
+                con.close();
+            }
+        } catch (Exception e) {
+
+        }
+    }
 
 }

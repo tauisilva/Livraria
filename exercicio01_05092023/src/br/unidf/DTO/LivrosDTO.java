@@ -6,7 +6,7 @@ package br.unidf.DTO;
 
 /**
  *
- * @author carla
+ * @author carla braga && taui silva && joao victor
  */
 public class LivrosDTO {
     
