@@ -25,11 +25,10 @@ import br.unidf.Testes.TesteSelecionarLivroPorID;
 
 public class Livros {
     /**
-     * @param args the command line arguments
+     * @param args 
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        List<LivrosDTO> livrosList = null;
 
         int choice;
 
@@ -53,14 +52,7 @@ public class Livros {
                     deletarLivro();
                     break;
                 case 4:
-                    if (livrosList == null) {
-                        livrosList = LivrosDAL.selecionarListaLivros();
-                    }
-                    if (livrosList != null && !livrosList.isEmpty()) {
-                        exibirListaLivros(livrosList);
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Nenhum livro encontrado.");
-                    }
+                    listarLivros();
                     break;
                 case 5:
                     System.exit(0);
@@ -119,31 +111,45 @@ public class Livros {
         }
     }
 
-    public static void exibirListaLivros(List<LivrosDTO> livrosList) {
-        // Crie uma matriz bidimensional para armazenar os dados da lista de livros
-        Object[][] data = new Object[livrosList.size()][3];
-
-        for (int i = 0; i < livrosList.size(); i++) {
-            LivrosDTO livro = livrosList.get(i);
-            data[i][0] = livro.getLivID();
-            data[i][1] = livro.getLivTitulo();
-            data[i][2] = livro.getLivISBN();
+    public static void listarLivros() {
+        try {
+            List<LivrosDTO> livrosList = LivrosDAL.selecionarListaLivros();
+            if (livrosList != null && !livrosList.isEmpty()) {
+                exibirListaLivros(livrosList);
+            } else {
+                JOptionPane.showMessageDialog(null, "Nenhum livro encontrado.");
+            }
+        } catch (Exception e) {
+            String msg = "Erro ao listar livros!\n" +
+                    "Verifique a conexção com o banco!\n" +
+                    " ' " + e.getMessage() + " '";
+            JOptionPane.showMessageDialog(null, msg);
         }
-
-        // Defina as colunas da tabela
-        String[] columns = { "ID", "Título", "ISBN" };
-
-        // Crie um modelo de tabela com os dados e colunas
-        DefaultTableModel model = new DefaultTableModel(data, columns);
-
-        // Crie uma tabela com o modelo
-        JTable table = new JTable(model);
-
-        // Crie um painel de rolagem para a tabela
-        JScrollPane scrollPane = new JScrollPane(table);
-
-        // Exiba a tabela em uma caixa de diálogo
-        JOptionPane.showMessageDialog(null, scrollPane, "Lista de Livros", JOptionPane.PLAIN_MESSAGE);
     }
 
+    public static void exibirListaLivros(List<LivrosDTO> livrosList) {
+        try {
+
+            Object[][] data = new Object[livrosList.size()][3];
+
+            for (int i = 0; i < livrosList.size(); i++) {
+                LivrosDTO livro = livrosList.get(i);
+                data[i][0] = livro.getLivID();
+                data[i][1] = livro.getLivTitulo();
+                data[i][2] = livro.getLivISBN();
+            }
+
+            String[] columns = { "ID", "Título", "ISBN" };
+
+            DefaultTableModel model = new DefaultTableModel(data, columns);
+
+            JTable table = new JTable(model);
+            JScrollPane scrollPane = new JScrollPane(table);
+
+            JOptionPane.showMessageDialog(null, scrollPane, "Lista de Livros", JOptionPane.PLAIN_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao exibir lista de livros: " + e.getMessage());
+        }
+
+    }
 }

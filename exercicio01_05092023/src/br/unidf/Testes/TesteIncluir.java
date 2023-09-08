@@ -17,13 +17,13 @@ public class TesteIncluir {
 
     public static void main(String[] args) throws Exception {
         // Metodos Padrão
-        // LivrosDTO livro = new LivrosDTO();
-        // livro.setLivTitulo("Testando connection");
-        // livro.setLivISBN(333);
-        
-        // LivrosDAL dal = new LivrosDAL();
-        // dal.incluirLivros(livro);
-        // System.out.println("add:" + livro.getLivTitulo() + "com sucesso");
+            // LivrosDTO livro = new LivrosDTO();
+            // livro.setLivTitulo("Testando connection");
+            // livro.setLivISBN(333);
+            
+            // LivrosDAL dal = new LivrosDAL();
+            // dal.incluirLivros(livro);
+            // System.out.println("add:" + livro.getLivTitulo() + "com sucesso");
 
         // Metodos JOpPane
         if (args.length == 2) {
@@ -40,7 +40,6 @@ public class TesteIncluir {
             JOptionPane.showMessageDialog(null, "Livro " + titulo + " adicionado com sucesso!");
         } else {
             JOptionPane.showMessageDialog(null, "Erro ao incluir" , "Erro:", JOptionPane.ERROR_MESSAGE);
-
         }
     }
 
