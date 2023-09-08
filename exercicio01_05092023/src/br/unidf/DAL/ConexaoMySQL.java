@@ -15,20 +15,20 @@ import java.sql.ResultSet;
  */
 public class ConexaoMySQL {
 
-    public Connection con;
-    public PreparedStatement ps;
-    public ResultSet rs;
-    public String SQL;
+    public static Connection con;
+    public static PreparedStatement ps;
+    public static ResultSet rs;
+    public static String SQL;
 
-    public void abrirBD() throws Exception {
+    public static void abrirBD() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        String url = "jdbc:mysql://localhost:3306/exercicio01_05092023";
+        String url = "jdbc:mysql://localhost:3306/livros_db";
         String user = "root";//Seu nome de usuário.
-        String password = "0299";  //Sua senha.
+        String password = "hakka";  //Sua senha.
         con = DriverManager.getConnection(url, user, password);
     }
 
-    public void fecharBD() throws Exception {
+    public static void fecharBD() throws Exception {
         if (con != null) {
             con.close();
         }

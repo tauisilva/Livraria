@@ -4,12 +4,15 @@
  */
 package br.unidf;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import br.unidf.DAL.LivrosDAL;
+import br.unidf.DTO.LivrosDTO;
 import br.unidf.Testes.TesteAlterarLivro;
 import br.unidf.Testes.TesteExcluirLivro;
 import br.unidf.Testes.TesteIncluir;
@@ -26,11 +29,13 @@ public class Livros {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
+        List<LivrosDTO> livrosList = null;
+
         int choice;
 
         do {
-            // CRUD
-            String[] options = { "Adicionar Livro", "Procurar Livro", "Editar Livro", "Excluir Livro", "Sair" };
+            String[] options = { "Adicionar Livro", "Procurar Livro", "Editar Livro", "Excluir Livro", "Listar Livros",
+                    "Sair" };
             choice = JOptionPane.showOptionDialog(null, "Escolha uma opção:", "CRUD de Livros",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
@@ -48,6 +53,16 @@ public class Livros {
                     deletarLivro();
                     break;
                 case 4:
+                    if (livrosList == null) {
+                        livrosList = LivrosDAL.selecionarListaLivros();
+                    }
+                    if (livrosList != null && !livrosList.isEmpty()) {
+                        exibirListaLivros(livrosList);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Nenhum livro encontrado.");
+                    }
+                    break;
+                case 5:
                     System.exit(0);
                     break;
             }
@@ -93,8 +108,8 @@ public class Livros {
     }
 
     public static void deletarLivro() throws Exception {
-         String idLivString = JOptionPane.showInputDialog("Informe o ID do Livro que deseja excluir:");
-          try {
+        String idLivString = JOptionPane.showInputDialog("Informe o ID do Livro que deseja excluir:");
+        try {
             TesteExcluirLivro.main(new String[] { idLivString });
 
         } catch (NumberFormatException e) {
@@ -104,10 +119,31 @@ public class Livros {
         }
     }
 
-    public static void listTodosLivros() throws Exception {
-        List li = new ArrayList();
-        li = LivrosDAL.selecionarListaLivros();
-        System.out.println("jkashdhasi:" + li);
+    public static void exibirListaLivros(List<LivrosDTO> livrosList) {
+        // Crie uma matriz bidimensional para armazenar os dados da lista de livros
+        Object[][] data = new Object[livrosList.size()][3];
+
+        for (int i = 0; i < livrosList.size(); i++) {
+            LivrosDTO livro = livrosList.get(i);
+            data[i][0] = livro.getLivID();
+            data[i][1] = livro.getLivTitulo();
+            data[i][2] = livro.getLivISBN();
+        }
+
+        // Defina as colunas da tabela
+        String[] columns = { "ID", "Título", "ISBN" };
+
+        // Crie um modelo de tabela com os dados e colunas
+        DefaultTableModel model = new DefaultTableModel(data, columns);
+
+        // Crie uma tabela com o modelo
+        JTable table = new JTable(model);
+
+        // Crie um painel de rolagem para a tabela
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        // Exiba a tabela em uma caixa de diálogo
+        JOptionPane.showMessageDialog(null, scrollPane, "Lista de Livros", JOptionPane.PLAIN_MESSAGE);
     }
 
 }
